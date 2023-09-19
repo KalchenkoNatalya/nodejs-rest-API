@@ -39,8 +39,12 @@ export const userSignUpSchema = Joi.object({
 });
 
 export const userSignInSchema = Joi.object({
-  password: Joi.string().min(6).required(),
-  email: Joi.string().pattern(emailRegexp).required(),
+  password: Joi.string().min(6).required().messages({
+    "any.required": "Помилка від Joi або іншої бібліотеки валідації>",
+  }),
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    "any.required": "Помилка від Joi або іншої бібліотеки валідації>",
+  }),
 });
 
 const User = model("user", userSchema);

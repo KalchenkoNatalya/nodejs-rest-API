@@ -3,8 +3,7 @@ import ctrl from "../../controllers/contactsControllers.js";
 // import * as ctrl from "../../controllers/contacts/index.js";
 import contactSchemas from "../../schemas/contactsSchema.js";
 import validateBody from "../../decorators/validateBody.js";
-import { isValidId } from "../../middlewares/index.js";
-
+import { authenticate, isValidId } from "../../middlewares/index.js";
 
 const contactsAddValidate = validateBody(contactSchemas.contactAddSchema);
 const contactsUpdateFavoriteValidate = validateBody(
@@ -13,7 +12,8 @@ const contactsUpdateFavoriteValidate = validateBody(
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", ctrl.getAllContacts);
+
+contactsRouter.get("/", authenticate, ctrl.getAllContacts);
 
 contactsRouter.get("/:id", isValidId, ctrl.getById);
 

@@ -13,6 +13,7 @@ const signup = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
   const hashPassword = await bcrypt.hash(password, 10);
+
   const newUser = await User.create({ ...req.body, password: hashPassword });
   res.status(201).json({
     user: {
@@ -35,15 +36,33 @@ const signin = async (req, res) => {
   const payload = {
     id: user._id,
   };
-  const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
+  // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" }); - при такому рядку пише, 
+  //що немає значення ключа, тому огорнула в обернені дужки, так працює
+    
+const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
+
+
   console.log(token);
+  await User.findByIdAndUpdate(id, { token });
   res.json({
     token,
     user: {
-        email: user.email,
-        subscription: user.subscription,
-      },
+      email: user.email,
+      subscription: user.subscription,
+    },
   });
 };
 
-export default { signup: ctrlWrapper(signup), signin: ctrlWrapper(signin) };
+const getCurrent = async (req, res) => {
+  // console.log(req.user);
+  const { email, subscription } = req.user;
+
+  res.json({ email, subscription });
+  // console.log({ email, subscription });
+};
+
+export default {
+  signup: ctrlWrapper(signup),
+  signin: ctrlWrapper(signin),
+  getCurrent: ctrlWrapper(getCurrent),
+};
