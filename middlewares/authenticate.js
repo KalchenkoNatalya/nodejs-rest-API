@@ -9,13 +9,12 @@ const { JWT_SECRET } = process.env;
 const authenticate = async (req, res, next) => {
   const { authorization = "" } = req.headers;
 
-
-
   const [bearer, token] = authorization.split(" ");
-  console.log(bearer);
+  console.log("bearer:", bearer);
   console.log(token);
+
   console.log("req.user authenticate:", req.user);
-  
+
   if (bearer !== "Bearer") {
     throw HttpError(401);
     // throw HttpError(401, error.message("not Bearer"));
