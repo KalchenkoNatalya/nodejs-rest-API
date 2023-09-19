@@ -7,14 +7,13 @@ import { authenticate, isValidId } from "../../middlewares/index.js";
 
 const contactsAddValidate = validateBody(contactSchemas.contactAddSchema);
 const contactsUpdateFavoriteValidate = validateBody(
-  contactSchemas.contactsUpdateFavoriteSchema
+    contactSchemas.contactsUpdateFavoriteSchema
 );
 
 const contactsRouter = express.Router();
 
-
 contactsRouter.get("/", authenticate, ctrl.getAllContacts);
-//  contactsRouter.get("/",  ctrl.getAllContacts);
+// contactsRouter.get("/", ctrl.getAllContacts);
 
 contactsRouter.get("/:id", isValidId, ctrl.getById);
 
@@ -23,17 +22,17 @@ contactsRouter.post("/", contactsAddValidate, ctrl.addContact);
 contactsRouter.delete("/:id", isValidId, ctrl.removeContactById);
 
 contactsRouter.put(
-  "/:id",
-  isValidId,
-  contactsAddValidate,
-  ctrl.updateContactById
+    "/:id",
+    isValidId,
+    contactsAddValidate,
+    ctrl.updateContactById
 );
 
 contactsRouter.patch(
-  "/:id/favorite",
-  isValidId,
-  contactsUpdateFavoriteValidate,
-  ctrl.updateStatusContact
+    "/:id/favorite",
+    isValidId,
+    contactsUpdateFavoriteValidate,
+    ctrl.updateStatusContact
 );
 
 export default contactsRouter;
