@@ -3,8 +3,9 @@ import {ctrlWrapper} from "../decorators/index.js";
 
 const getAllContacts = async (req, res) => {
   const result = await Contact.find();
-  // console.log(result);
-  // console.log(req.user);
+  console.log("req.user getAllContacts:", req.user);
+  console.log("запит контакти");
+  
   res.json(result);
 };
 

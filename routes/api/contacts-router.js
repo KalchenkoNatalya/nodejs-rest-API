@@ -14,6 +14,7 @@ const contactsRouter = express.Router();
 
 
 contactsRouter.get("/", authenticate, ctrl.getAllContacts);
+//  contactsRouter.get("/",  ctrl.getAllContacts);
 
 contactsRouter.get("/:id", isValidId, ctrl.getById);
 

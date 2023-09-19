@@ -36,9 +36,15 @@ const signin = async (req, res) => {
   if (!passwordCompare) {
     throw HttpError(401, "Email or password is wrong");
   }
+
+  // const payload = {
+  //   id: user._id,
+  // };
+  const { _id: id } = user;
+
   const payload = {
-    id: user._id,
-  };
+      id,
+  }
   console.log("payload.id:", payload.id)
   // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" }); - при такому рядку пише,
   //що немає значення ключа, тому огорнула в обернені дужки, так працює
