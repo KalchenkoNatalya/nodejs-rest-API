@@ -43,7 +43,7 @@ const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
 
 
   console.log(token);
-  await User.findByIdAndUpdate(id, { token });
+  // await User.findByIdAndUpdate(id, { token });
   res.json({
     token,
     user: {
