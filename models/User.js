@@ -35,7 +35,7 @@ export const userSignUpSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required().messages({
     "any.required": "Помилка від Joi або іншої бібліотеки валідації>",
   }),
-  subscription: Joi.string().required(),
+   subscription: Joi.string()
 });
 
 export const userSignInSchema = Joi.object({
