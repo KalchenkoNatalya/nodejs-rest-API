@@ -8,20 +8,25 @@ const { JWT_SECRET } = process.env;
 
 const authenticate = async (req, res, next) => {
   const { authorization = "" } = req.headers;
-// console.log(req)
+
+
+
   const [bearer, token] = authorization.split(" ");
   console.log(bearer);
   console.log(token);
-  console.log(req.user);
+  console.log("req.user authenticate:", req.user);
+  
   if (bearer !== "Bearer") {
-    throw HttpError(401, error.message("not Bearer"));
+    throw HttpError(401);
+    // throw HttpError(401, error.message("not Bearer"));
   }
   try {
-    const {id} = jwt.verify(token, JWT_SECRET);
+    const { id } = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(id);
-    console.log(user);
+    console.log("req.user authenticate, user:", req.user);
     if (!user || !user.token) {
-      throw HttpError(401, error.message("not user"));
+      throw HttpError(401);
+      // throw HttpError(401, error.message("not user"));
     }
     req.user = user;
     // console.log(req.user);

@@ -26,6 +26,7 @@ const signup = async (req, res) => {
 const signin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+  console.log("user:", user)
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
   }
@@ -36,14 +37,15 @@ const signin = async (req, res) => {
   const payload = {
     id: user._id,
   };
-  // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" }); - при такому рядку пише, 
+  console.log("payload.id:", payload.id)
+  // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" }); - при такому рядку пише,
   //що немає значення ключа, тому огорнула в обернені дужки, так працює
-    
-const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
 
+  const token = jwt.sign({ id: user._id}, `${JWT_SECRET}`, { expiresIn: "23h" });
+  // const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
 
-  console.log(token);
-  await User.findByIdAndUpdate(id, { token });
+  console.log("token:", token);
+  // await User.findByIdAndUpdate(id, { token });
   res.json({
     token,
     user: {
@@ -51,10 +53,11 @@ const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
       subscription: user.subscription,
     },
   });
+
 };
 
 const getCurrent = async (req, res) => {
-  // console.log(req.user);
+  console.log("req.user getCurrent:", req.user);
   const { email, subscription } = req.user;
 
   res.json({ email, subscription });
