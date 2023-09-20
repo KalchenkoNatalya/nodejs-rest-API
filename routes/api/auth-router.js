@@ -10,8 +10,10 @@ const authRouter = express.Router();
 const userSignUpValidate = validateBody(userSchema.userSignUpSchema);
 const userSigniNValidate = validateBody(userSchema.userSignInSchema);
 
-authRouter.post("/register", userSignUpValidate, authController.signup);
+authRouter.post("/register",  userSignUpValidate, authController.signup);
 authRouter.post("/login", userSigniNValidate, authController.signin);
+authRouter.post("/logout", userSigniNValidate, authController.signin);
 authRouter.get("/current", authenticate, authController.getCurrent);
+
 
 export default authRouter;

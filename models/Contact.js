@@ -2,9 +2,7 @@ import { Schema, model } from "mongoose";
 import { handleSaveError } from "./hooks.js";
 import { runValidateAtUpdate } from "./hooks.js";
 
-
-// const releaseYearRegexp = /^\d{4}$/; 
-
+// const releaseYearRegexp = /^\d{4}$/;
 
 const contactSchema = new Schema(
   {
@@ -25,13 +23,13 @@ const contactSchema = new Schema(
     },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-    }
-  //   releaseYear: {
-  //     type: String,
-  //     match: releaseYearRegexp,
-  //     required: true,
-  // }
+      ref: "user",
+    },
+    //   releaseYear: {
+    //     type: String,
+    //     match: releaseYearRegexp,
+    //     required: true,
+    // }
   },
   { versionKey: false, timestamps: true }
 );

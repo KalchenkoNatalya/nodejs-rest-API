@@ -65,11 +65,12 @@ const signin = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
+  
   console.log("req.user getCurrent:", req.user);
+
   const { email, subscription } = req.user;
 
   res.json({ email, subscription });
-  // console.log({ email, subscription });
 };
 
 export default {

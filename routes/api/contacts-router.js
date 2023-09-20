@@ -7,32 +7,36 @@ import { authenticate, isValidId } from "../../middlewares/index.js";
 
 const contactsAddValidate = validateBody(contactSchemas.contactAddSchema);
 const contactsUpdateFavoriteValidate = validateBody(
-    contactSchemas.contactsUpdateFavoriteSchema
+  contactSchemas.contactsUpdateFavoriteSchema
 );
 
 const contactsRouter = express.Router();
 
+// contactsRouter.use(authenticate)
+
 contactsRouter.get("/", authenticate, ctrl.getAllContacts);
 // contactsRouter.get("/", ctrl.getAllContacts);
 
-contactsRouter.get("/:id", isValidId, ctrl.getById);
+contactsRouter.get("/:id", authenticate, isValidId, ctrl.getById);
 
-contactsRouter.post("/", contactsAddValidate, ctrl.addContact);
+contactsRouter.post("/", authenticate, contactsAddValidate, ctrl.addContact);
 
-contactsRouter.delete("/:id", isValidId, ctrl.removeContactById);
+contactsRouter.delete("/:id", authenticate, isValidId, ctrl.removeContactById);
 
 contactsRouter.put(
-    "/:id",
-    isValidId,
-    contactsAddValidate,
-    ctrl.updateContactById
+  "/:id",
+  authenticate,
+  isValidId,
+  contactsAddValidate,
+  ctrl.updateContactById
 );
 
 contactsRouter.patch(
-    "/:id/favorite",
-    isValidId,
-    contactsUpdateFavoriteValidate,
-    ctrl.updateStatusContact
+  "/:id/favorite",
+  authenticate,
+  isValidId,
+  contactsUpdateFavoriteValidate,
+  ctrl.updateStatusContact
 );
 
 export default contactsRouter;
