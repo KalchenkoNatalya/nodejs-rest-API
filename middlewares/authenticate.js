@@ -7,7 +7,9 @@ import User from "../models/User.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET } = process.env;
-console.log("JWT_SECRET:", JWT_SECRET);
+
+// console.log("JWT_SECRET:", JWT_SECRET);
+
 const authenticate = async (req, res, next) => {
   try {
     const { authorization = "" } = req.headers;
@@ -23,7 +25,7 @@ const authenticate = async (req, res, next) => {
     // console.log("id з верифікації:", id);
     const user = await User.findById(id);
     // console.log("user:", user);
-    if (!user) {
+    if (!user || !user.token) {
       throw HttpError(401);
     }
 
