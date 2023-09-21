@@ -7,9 +7,24 @@ const getAllContacts = async (req, res) => {
   //   "потрапляє в контроллер getAllContacts і приходить req.user:",
   //   req.user
   // );
-  const { page = 1, limit = 4 } = req.query;
+  const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
   const { _id: owner } = req.user;
+  const isFavorite = req.query.favorite;
+
+  // console.log("isFavorite:", isFavorite);
+
+  if (isFavorite) {
+    const { favorite } = req.query;
+    const filter = favorite === "true" ? { favorite: true } : {};
+    try {
+      const result = await Contact.find(filter);
+      res.json({ message: "filtered succesful", result });
+    } catch (err) {
+      res.status(500).json({ error: "Помилка сервера" });
+    }
+  }
+
   const result = await Contact.find({ owner }, "-createdAt -updatedAt", {
     skip,
     limit,
@@ -18,10 +33,10 @@ const getAllContacts = async (req, res) => {
   res.json(result);
 };
 
+
 const getById = async (req, res) => {
   const { id } = req.params;
   const owner = req.user._id;
-  // const { _id: owner } = req.user; // теж саме, що і 24 рядок
 
   const result = await Contact.findOne({ _id: id, owner });
   if (!result) {
@@ -38,55 +53,22 @@ const addContact = async (req, res) => {
   res.status(201).json(newContact);
 };
 
-// const removeContactById11 = async (req, res) => {
-//   const { id: contactId } = req.params;
-//   const { _id: owner } = req.user;
-
-//   const contact = await Contact.findById(contactId);
-//   // console.log("contact.owner.toString():", contact.owner.toString())
-//   // console.log("owner.toString():", owner.toString())
-//   // console.log(contact.owner.toString() === owner.toString())
-//   if (!contact) {
-//     throw HttpError(404, `Contact with id=${contactId} not found`);
-//   }
-
-//   if (contact.owner.toString() !== owner.toString()) {
-//     throw HttpError(403, "This is not your contact");
-//   }
-
-//   await Contact.findByIdAndDelete(contactId);
-//   res.json({ message: "Contact deleted" });
-// };
 
 const removeContactById = async (req, res) => {
   const { _id: owner } = req.user;
 
   const { id } = req.params;
-  console.log(id);
+  // console.log(id);
   const result = await Contact.findOneAndDelete({ _id: id, owner });
   if (!result) throw HttpError(404, `id=${id} not found`);
 
   res.json({ message: `contact id=${id} deleted` });
 };
 
-// const updateContactById111 = async (req, res) => {
-//   const { id } = req.params;
-//   const { _id: owner } = req.user;
-//   const result = await Contact.findByIdAndUpdate(id, req.body, {
-//     new: true,
-//     runValidators: true,
-//   });
-//   // console.log(result);
-//   if (!result) {
-//     throw HttpError(404, `Contact with id=${id} not found`);
-//   }
-
-//   res.json(result);
-// };
 const updateContactById = async (req, res) => {
   const { id } = req.params;
   const { _id: owner } = req.user;
-  const result = await Contact.findByIdAndUpdate({_id: id, owner}, req.body, {
+  const result = await Contact.findOneAndUpdate({ _id: id, owner }, req.body, {
     new: true,
     runValidators: true,
   });
@@ -97,11 +79,16 @@ const updateContactById = async (req, res) => {
 
   res.json(result);
 };
+
 const updateStatusContact = async (req, res) => {
   const { id } = req.params;
+
+  const { _id: owner } = req.user;
+  // console.log("id:", id)
+  // console.log("owner:", owner)
   const { favorite } = req.body;
-  const result = await Contact.findByIdAndUpdate(
-    id,
+  const result = await Contact.findOneAndUpdate(
+    { _id: id, owner },
     { favorite },
     {
       new: true,
@@ -115,6 +102,7 @@ const updateStatusContact = async (req, res) => {
 
   res.json(result);
 };
+
 
 export default {
   getAllContacts: ctrlWrapper(getAllContacts),

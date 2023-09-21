@@ -42,9 +42,6 @@ const signin = async (req, res) => {
   const payload = { id };
   console.log("payload.id:", payload.id);
 
-  // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" }); - при такому рядку пише,
-  //що немає значення ключа, тому огорнула в обернені дужки, так працює
-
   const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
 
   // console.log("token:", token);
@@ -71,9 +68,27 @@ const signout = async (req, res) => {
   await User.findByIdAndUpdate(_id, { token: "" });
   res.json({ message: "user succesfull logout" });
 };
+
+const updateSubscription = async (req, res) => {
+  const { _id } = req.user;
+  const { email } = req.user;
+  // console.log(_id)
+  const { subscription } = req.body;
+  const result = await User.findByIdAndUpdate(
+    _id,
+    { subscription },
+    { new: true }
+  );
+  if (!result) {
+    throw HttpError(404, "not update");
+  }
+  res.json({ message: "subscription succesful updated", email, subscription });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };
