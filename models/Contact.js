@@ -3,8 +3,6 @@ import { handleSaveError } from "./hooks.js";
 import { runValidateAtUpdate } from "./hooks.js";
 
 
-// const releaseYearRegexp = /^\d{4}$/; 
-
 
 const contactSchema = new Schema(
   {
@@ -23,11 +21,11 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
-  //   releaseYear: {
-  //     type: String,
-  //     match: releaseYearRegexp,
-  //     required: true,
-  // }
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
+
   },
   { versionKey: false, timestamps: true }
 );
