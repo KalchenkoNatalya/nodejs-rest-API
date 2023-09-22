@@ -3,17 +3,13 @@ import { ctrlWrapper } from "../decorators/index.js";
 import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
-  // console.log(
-  //   "потрапляє в контроллер getAllContacts і приходить req.user:",
-  //   req.user
-  // );
+ 
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
   const { _id: owner } = req.user;
   const isFavorite = req.query.favorite;
 
-  // console.log("isFavorite:", isFavorite);
-
+  
   if (isFavorite) {
     const { favorite } = req.query;
     const filter = favorite === "true" ? { favorite: true } : {};
@@ -58,7 +54,7 @@ const removeContactById = async (req, res) => {
   const { _id: owner } = req.user;
 
   const { id } = req.params;
-  // console.log(id);
+
   const result = await Contact.findOneAndDelete({ _id: id, owner });
   if (!result) throw HttpError(404, `id=${id} not found`);
 
@@ -72,7 +68,7 @@ const updateContactById = async (req, res) => {
     new: true,
     runValidators: true,
   });
-  // console.log(result);
+
   if (!result) {
     throw HttpError(404, `Contact with id=${id} not found`);
   }
@@ -84,8 +80,7 @@ const updateStatusContact = async (req, res) => {
   const { id } = req.params;
 
   const { _id: owner } = req.user;
-  // console.log("id:", id)
-  // console.log("owner:", owner)
+
   const { favorite } = req.body;
   const result = await Contact.findOneAndUpdate(
     { _id: id, owner },
@@ -95,7 +90,7 @@ const updateStatusContact = async (req, res) => {
       runValidators: true,
     }
   );
-  // console.log(result);
+
   if (!result) {
     throw HttpError(404, `Contact with id=${id} not found`);
   }

@@ -8,7 +8,7 @@ import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET } = process.env;
 
-// console.log("JWT_SECRET:", JWT_SECRET);
+
 
 const authenticate = async (req, res, next) => {
   try {
@@ -19,12 +19,12 @@ const authenticate = async (req, res, next) => {
     if (bearer !== "Bearer") {
       throw HttpError(401);
     }
-    // console.log("try catch початок");
+
     const { id } = jwt.verify(token, JWT_SECRET);
 
-    // console.log("id з верифікації:", id);
+
     const user = await User.findById(id);
-    // console.log("user:", user);
+
     if (!user || !user.token) {
       throw HttpError(401);
     }

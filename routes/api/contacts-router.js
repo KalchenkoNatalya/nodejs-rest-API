@@ -12,10 +12,10 @@ const contactsUpdateFavoriteValidate = validateBody(
 
 const contactsRouter = express.Router();
 
-// contactsRouter.use(authenticate)
+
 
 contactsRouter.get("/", authenticate, ctrl.getAllContacts);
-// contactsRouter.get("/", ctrl.getAllContacts);
+
 
 contactsRouter.get("/:id", authenticate, isValidId, ctrl.getById);
 

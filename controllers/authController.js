@@ -44,8 +44,7 @@ const signin = async (req, res) => {
 
   const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
 
-  // console.log("token:", token);
-  await User.findByIdAndUpdate(id, { token }); // зберігаємо токен в базі даних перед тим, як відправити відповідь на фронтенд
+  await User.findByIdAndUpdate(id, { token }); 
   res.json({
     token,
     user: {
@@ -56,7 +55,7 @@ const signin = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  // console.log("req.user getCurrent:", req.user);
+  
 
   const { email, subscription } = req.user;
 
@@ -72,7 +71,7 @@ const signout = async (req, res) => {
 const updateSubscription = async (req, res) => {
   const { _id } = req.user;
   const { email } = req.user;
-  // console.log(_id)
+  
   const { subscription } = req.body;
   const result = await User.findByIdAndUpdate(
     _id,
