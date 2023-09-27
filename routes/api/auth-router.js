@@ -3,7 +3,7 @@ import * as userSchema from "../../models/User.js";
 
 import { validateBody } from "../../decorators/index.js";
 import authController from "../../controllers/authController.js";
-import { authenticate } from "../../middlewares/index.js";
+import { authenticate, upload } from "../../middlewares/index.js";
 
 const authRouter = express.Router();
 
@@ -18,5 +18,6 @@ authRouter.get("/current", authenticate, authController.getCurrent);
 
 authRouter.post("/logout", authenticate, authController.signout);
 authRouter.patch("/", authenticate, authController.updateSubscription);
+authRouter.patch("/avatars", upload.single("avatar"), authenticate, authController.updateAvatar);
 
 export default authRouter;

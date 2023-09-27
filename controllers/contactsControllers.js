@@ -2,14 +2,13 @@ import Contact from "../models/Contact.js";
 import { ctrlWrapper } from "../decorators/index.js";
 import HttpError from "../helpers/HttpError.js";
 
+
 const getAllContacts = async (req, res) => {
- 
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
   const { _id: owner } = req.user;
   const isFavorite = req.query.favorite;
 
-  
   if (isFavorite) {
     const { favorite } = req.query;
     const filter = favorite === "true" ? { favorite: true } : {};
@@ -29,7 +28,6 @@ const getAllContacts = async (req, res) => {
   res.json(result);
 };
 
-
 const getById = async (req, res) => {
   const { id } = req.params;
   const owner = req.user._id;
@@ -43,12 +41,13 @@ const getById = async (req, res) => {
 };
 
 const addContact = async (req, res) => {
+ 
   const { _id: owner } = req.user;
-  const newContact = await Contact.create({ ...req.body, owner });
+  
+   const newContact = await Contact.create({ ...req.body, poster, owner });
 
   res.status(201).json(newContact);
 };
-
 
 const removeContactById = async (req, res) => {
   const { _id: owner } = req.user;
@@ -97,7 +96,6 @@ const updateStatusContact = async (req, res) => {
 
   res.json(result);
 };
-
 
 export default {
   getAllContacts: ctrlWrapper(getAllContacts),

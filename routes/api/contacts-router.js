@@ -3,7 +3,7 @@ import ctrl from "../../controllers/contactsControllers.js";
 // import * as ctrl from "../../controllers/contacts/index.js";
 import contactSchemas from "../../schemas/contactsSchema.js";
 import validateBody from "../../decorators/validateBody.js";
-import { authenticate, isValidId } from "../../middlewares/index.js";
+import { authenticate, upload,  isValidId } from "../../middlewares/index.js";
 
 const contactsAddValidate = validateBody(contactSchemas.contactAddSchema);
 const contactsUpdateFavoriteValidate = validateBody(
@@ -19,7 +19,7 @@ contactsRouter.get("/", authenticate, ctrl.getAllContacts);
 
 contactsRouter.get("/:id", authenticate, isValidId, ctrl.getById);
 
-contactsRouter.post("/", authenticate, contactsAddValidate, ctrl.addContact);
+contactsRouter.post("/", upload.single("poster"), authenticate, contactsAddValidate, ctrl.addContact);
 
 contactsRouter.delete("/:id", authenticate, isValidId, ctrl.removeContactById);
 
