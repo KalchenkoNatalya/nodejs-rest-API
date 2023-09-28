@@ -3,8 +3,13 @@ import { ctrlWrapper } from "../decorators/index.js";
 import { HttpError } from "../helpers/index.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import fs from "fs/promises";
+import path from "path";
+import gravatar from "gravatar";
+import Jimp from "jimp";
 
 const { JWT_SECRET } = process.env;
+const avatarPath = path.resolve("public", "avatars");
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -14,11 +19,17 @@ const signup = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const avatarURL = gravatar.url("email");
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL,
     },
   });
 };
@@ -44,7 +55,7 @@ const signin = async (req, res) => {
 
   const token = jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: "23h" });
 
-  await User.findByIdAndUpdate(id, { token }); 
+  await User.findByIdAndUpdate(id, { token });
   res.json({
     token,
     user: {
@@ -55,8 +66,6 @@ const signin = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  
-
   const { email, subscription } = req.user;
 
   res.json({ email, subscription });
@@ -71,7 +80,7 @@ const signout = async (req, res) => {
 const updateSubscription = async (req, res) => {
   const { _id } = req.user;
   const { email } = req.user;
-  
+
   const { subscription } = req.body;
   const result = await User.findByIdAndUpdate(
     _id,
@@ -84,10 +93,36 @@ const updateSubscription = async (req, res) => {
   res.json({ message: "subscription succesful updated", email, subscription });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { email } = req.user;
+
+  // console.log("req.file:", req.file);
+  const { path: oldPath, originalname } = req.file;
+  const uniqueFilename = `${_id}_${originalname}`;
+
+  const newPath = path.join(avatarPath, uniqueFilename);
+
+  const resizeFile = await Jimp.read(oldPath);
+  resizeFile.resize(250, 250).write(newPath);
+  const avatarURL = path.join(avatarPath, uniqueFilename);
+  const result = await User.findByIdAndUpdate(
+    _id,
+    { avatarURL },
+    { new: true }
+  );
+  if (!result) {
+    throw HttpError(404, "not update");
+  }
+  await fs.unlink(oldPath);
+  res.json({ message: "avatar succesful updated", email, avatarURL });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
   updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };

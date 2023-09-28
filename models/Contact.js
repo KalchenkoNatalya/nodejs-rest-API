@@ -2,8 +2,6 @@ import { Schema, model } from "mongoose";
 import { handleSaveError } from "./hooks.js";
 import { runValidateAtUpdate } from "./hooks.js";
 
-
-
 const contactSchema = new Schema(
   {
     name: {
@@ -25,7 +23,6 @@ const contactSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "user",
     },
-
   },
   { versionKey: false, timestamps: true }
 );
