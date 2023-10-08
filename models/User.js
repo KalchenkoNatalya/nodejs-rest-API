@@ -21,11 +21,20 @@ const userSchema = new Schema({
   },
   token: String,
   avatarURL: String,
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
+    type: String,
+    required: [true, "Verify code is required"],
+  },
 });
 
 userSchema.post("save", handleSaveError);
 
-userSchema.pre("findOneAndUpdate", runValidateAtUpdate);
+// userSchema.pre("findOneAndUpdate", runValidateAtUpdate);
+userSchema.pre("updateOne", runValidateAtUpdate);
 
 userSchema.post("findOneAndUpdate", handleSaveError);
 
@@ -53,6 +62,11 @@ export const userUpdateSubscription = Joi.object({
     "any.required":
       "subscription is required, type 'starter', 'pro', 'business'",
   }),
+});
+export const userEmailSchema = Joi.object({
+  email: Joi.string()
+    .required()
+    .messages({ "any.required": "email is required" }),
 });
 const User = model("user", userSchema);
 

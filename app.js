@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import contactsRouter from "./routes/api/contacts-router.js";
 import authRouter from "./routes/api/auth-router.js";
 
-import path from "path"
 dotenv.config();
 
 const app = express();
